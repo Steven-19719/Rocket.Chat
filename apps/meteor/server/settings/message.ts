@@ -257,14 +257,19 @@ export const createMessageSettings = () =>
 			enableQuery: [{ _id: 'AutoTranslate_Enabled', value: true }],
 		});
 
-		await this.add('AutoTranslate_ServiceProvider', 'google-translate', {
+		// Service provider dropdown — default changed from 'google-translate' to
+		// 'localllm-translate' which routes to a local Ollama instance.
+		// The former 'google-translate' option has been removed; add it back here
+		// (and restore googleTranslate.ts import in index.ts) if Google is needed again.
+		await this.add('AutoTranslate_ServiceProvider', 'localllm-translate', {
 			type: 'select',
 			group: 'Message',
 			section: 'AutoTranslate',
 			values: [
 				{
-					key: 'google-translate',
-					i18nLabel: 'AutoTranslate_Google',
+					// Key must match this.name in localLLMTranslate.ts
+					key: 'localllm-translate',
+					i18nLabel: 'AutoTranslate_LocalLLM',
 				},
 				{
 					key: 'deepl-translate',
@@ -280,20 +285,45 @@ export const createMessageSettings = () =>
 			public: true,
 		});
 
-		await this.add('AutoTranslate_GoogleAPIKey', '', {
+		// Base URL of the locally-running Ollama instance.
+		// Shown in the admin panel only when LocalLLM is the active provider.
+		// Replaces the former AutoTranslate_GoogleAPIKey setting.
+		await this.add('AutoTranslate_LocalLLMBaseURL', 'http://localhost:11434', {
 			type: 'string',
 			group: 'Message',
-			section: 'AutoTranslate_Google',
+			section: 'AutoTranslate_LocalLLM',
 			public: false,
-			i18nLabel: 'AutoTranslate_APIKey',
+			i18nLabel: 'AutoTranslate_LocalLLM_BaseURL',
 			enableQuery: [
 				{
 					_id: 'AutoTranslate_Enabled',
 					value: true,
 				},
 				{
+					// Only show this field when LocalLLM is selected as the provider
 					_id: 'AutoTranslate_ServiceProvider',
-					value: 'google-translate',
+					value: 'localllm-translate',
+				},
+			],
+		});
+
+		// Ollama model name used for all translation requests.
+		// Must be a model that is already pulled on the Ollama instance.
+		await this.add('AutoTranslate_LocalLLMModel', 'qwen3.5:9b', {
+			type: 'string',
+			group: 'Message',
+			section: 'AutoTranslate_LocalLLM',
+			public: false,
+			i18nLabel: 'AutoTranslate_LocalLLM_Model',
+			enableQuery: [
+				{
+					_id: 'AutoTranslate_Enabled',
+					value: true,
+				},
+				{
+					// Only show this field when LocalLLM is selected as the provider
+					_id: 'AutoTranslate_ServiceProvider',
+					value: 'localllm-translate',
 				},
 			],
 		});

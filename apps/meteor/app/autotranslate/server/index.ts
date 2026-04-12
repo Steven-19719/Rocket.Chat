@@ -8,7 +8,7 @@ import './permissions';
 import './methods/getSupportedLanguages';
 import './methods/saveSettings';
 import './methods/translateMessage';
-import './googleTranslate';
+import './localLLMTranslate'; // Replaced googleTranslate — now routes to local Ollama instance
 import './deeplTranslate';
 import './msTranslate';
 import './methods/getProviderUiMetadata';
