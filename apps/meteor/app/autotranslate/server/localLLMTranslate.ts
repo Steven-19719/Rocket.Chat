@@ -186,6 +186,8 @@ class LocalLLMAutoTranslate extends AutoTranslate {
 				prompt,
 				// Disable streaming: receive one complete JSON response instead of chunks
 				stream: false,
+				// Disable thinking: for speed up the translation process.
+				think: false,
 			}),
 			// Default server-fetch timeout is 20s which is too short for a local LLM.
 			// 120s gives the model enough time to translate even longer messages.
